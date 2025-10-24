@@ -1,0 +1,19 @@
+﻿# System files
+.DS_Store
+Thumbs.db
+
+# Visual Studio / IDE
+.vs/
+.vscode/
+
+# Node
+node_modules/
+dist/
+
+# Python
+__pycache__/
+*.pyc
+venv/
+
+# Logs
+*.log
