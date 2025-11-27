@@ -1,0 +1,50 @@
+services:
+  # API do Simulador SAC
+  sac-api:
+    build:
+      context: .
+      dockerfile: SacSimulator.Api/Dockerfile
+    container_name: sac_simulator_api
+    ports:
+      - "5000:5000"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:5000
+    networks:
+      - sac_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/api/sac/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Frontend Web
+  sac-web:
+    build:
+      context: .
+      dockerfile: SacSimulator.Web/Dockerfile
+    container_name: sac_simulator_web
+    ports:
+      - "8080:80"
+    depends_on:
+      - sac-api
+    networks:
+      - sac_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  sac_network:
+    driver: bridge
+    name: sac_simulator_network
+
+volumes:
+  # Volume para logs (opcional)
+  api_logs:
+    driver: local
